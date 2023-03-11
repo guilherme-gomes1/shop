@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shop/pages/products_overview_page.dart';
+import 'package:shop/pages/produtct_detail_page.dart';
+import 'package:shop/utils/app_routs.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,10 +19,10 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Lato',
       ),
       debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-
+      initialRoute: AppRouts.productsOverviewPage,
       routes: {
-        '/': (context) => ProductsOverviewPage()
+        AppRouts.productsOverviewPage:(context) => ProductsOverviewPage(),
+        AppRouts.productDetail:(context) => const ProdutctDetailPage()
       },
     );
   }
