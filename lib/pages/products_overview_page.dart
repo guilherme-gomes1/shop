@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shop/components/badge.dart';
 import 'package:shop/components/product_grid.dart';
+import 'package:shop/models/cart.dart';
+import 'package:shop/utils/app_routs.dart';
 
 enum FilterOptions {
   favorite,
@@ -22,6 +26,19 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
       appBar: AppBar(
         title: const Text('Minha Loja'),
         actions: [
+          Consumer<Cart>(
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRouts.cart);
+              },
+              icon: const Icon(Icons.shopping_cart),
+            ),
+            builder: (ctx, cart, child) => Badge(
+              value: cart.itemsCount.toString(),
+              color: Colors.red,
+              child: child!,
+            ),
+          ),
           PopupMenuButton(
             itemBuilder: (_) => const [
               PopupMenuItem(
@@ -33,23 +50,22 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
                 child: Text('Todos'),
               ),
             ],
-            onSelected: (FilterOptions selectValue){
+            onSelected: (FilterOptions selectValue) {
               setState(() {
-                if(selectValue == FilterOptions.favorite){
+                if (selectValue == FilterOptions.favorite) {
                   _showFavoriteOnly = true;
                 } else {
                   _showFavoriteOnly = false;
                 }
               });
-              
             },
-          )
+          ),
         ],
         centerTitle: true,
       ),
-      body: ProductGrid(_showFavoriteOnly,),
+      body: ProductGrid(
+        _showFavoriteOnly,
+      ),
     );
   }
 }
-
-
