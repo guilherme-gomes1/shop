@@ -1,52 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:shop/models/cart.dart';
 import 'package:shop/models/product.dart';
-import 'package:shop/utils/app_routs.dart';
 
 class ProductItem extends StatelessWidget {
-  const ProductItem({Key? key,}) : super(key: key);
+  final Product product;
+
+  const ProductItem(this.product, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final product = Provider.of<Product>(context);
-    final cart = Provider.of<Cart>(context);
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: GridTile(
-        footer: GridTileBar(
-          backgroundColor: Colors.black87,
-          leading: IconButton(
-            onPressed: () {
-              product.toggleFavorite();
-            },
-            icon: Icon(product.isFavorite ? Icons.favorite : Icons.favorite_border),
-            color: Colors.red,
-          ),
-          title: Text(
-            product.name,
-            textAlign: TextAlign.center,
-          ),
-          trailing: IconButton(
-            onPressed: () {
-              cart.addItem(product);
-            },
-            icon: const Icon(Icons.shopping_cart),
-            color: Colors.red,
-          ),
-        ),
-        child: GestureDetector(
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
-          ),
-          onTap: () {
-            Navigator.of(context).pushNamed(
-              AppRouts.productDetail,
-              arguments: product,
-            );
-          },
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(product.imageUrl),
+      ),
+      title: Text(product.name),
+      trailing: Container(
+        width: 100,
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.edit, color: Colors.purple,),
+            ),
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.delete, color: Theme.of(context).errorColor),
+            ),
+          ],
         ),
       ),
     );
