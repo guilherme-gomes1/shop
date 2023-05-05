@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop/components/cart_item.dart';
+import 'package:shop/exceptions/http_exception.dart';
 import 'package:shop/models/cart.dart';
 import 'package:shop/models/order_list.dart';
 
@@ -56,21 +57,7 @@ class CartPage extends StatelessWidget {
                     ),
                   ),
                   const Spacer(),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                        textStyle: const TextStyle(
-                      color: Colors.purple,
-                    )),
-                    onPressed: () {
-                      Provider.of<OrderList>(
-                        context,
-                        listen: false,
-                      ).addOrder(cart);
-
-                      cart.clear();
-                    },
-                    child: const Text('COMPRAR'),
-                  )
+                  CartButton(cart: cart)
                 ],
               ),
             ),
@@ -78,5 +65,63 @@ class CartPage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class CartButton extends StatefulWidget {
+  const CartButton({
+    Key? key,
+    required this.cart,
+  }) : super(key: key);
+
+  final Cart cart;
+
+  @override
+  State<CartButton> createState() => _CartButtonState();
+}
+
+class _CartButtonState extends State<CartButton> {
+  bool _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    final msg = ScaffoldMessenger.of(context);
+    return _isLoading
+        ? const CircularProgressIndicator()
+        : TextButton(
+            style: TextButton.styleFrom(
+                textStyle: const TextStyle(
+              color: Colors.purple,
+            )),
+            onPressed: widget.cart.itemsCount == 0
+                ? null
+                : () async {
+                    try {
+                      setState(() => _isLoading = true);
+                      await Provider.of<OrderList>(
+                        context,
+                        listen: false,
+                      ).addOrder(widget.cart);
+
+                      widget.cart.clear();
+                      msg.showSnackBar(const SnackBar(
+                        content: Text(
+                          'Compra efetuada com sucesso!',
+                        ),
+                        backgroundColor: Colors.green,
+                      ));
+                      setState(() => _isLoading = false);
+                      Navigator.of(context).pop();
+                    } catch (error) {
+                      msg.showSnackBar(const SnackBar(
+                        content: Text(
+                          'Não foi possível concluir a compra!',
+                        ),
+                        backgroundColor: Colors.red,
+                      ));
+                      setState(() => _isLoading = false);
+                    }
+                  },
+            child: const Text('COMPRAR'),
+          );
   }
 }

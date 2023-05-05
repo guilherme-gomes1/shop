@@ -65,7 +65,7 @@ class CartItemWidget extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: ListTile(
             title: Text(cartItem.name),
-            subtitle: Text('R\$ ${cartItem.price * cartItem.quantity}'),
+            subtitle: Text('R\$ ${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}'),
             trailing: Text('${cartItem.quantity}x'),
             leading: CircleAvatar(
                 child: Padding(
